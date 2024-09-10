@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Document</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 200px;
+            background-color: #f0f0f5;
+            margin: 0;
+        }
+
+        .color-box {
+            width: 150px;
+            height: 150px;
+            background-color: #4CAF50;
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #FFFFFF;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 0px 20px;
+        }
+
+        .clicker-div {
+            width: 60vw;
+            height: 60vh;
+            background-color: lightblue;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .container {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        input[type="number"] {
+            width: 60px;
+            padding: 10px;
+            border: 2px solid #4CAF50;
+            border-radius: 8px;
+            font-size: 16px;
+            text-align: center;
+            outline: none;
+        }
+
+        input[type="number"]:focus {
+            border-color: #45a049;
+        }
+
+        #timer-display {
+            font-size: 48px;
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: 0 15px;
+            display: inline-block;
+            text-align: center;
+        }
+
+        #start-button {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        #start-button:hover {
+            background-color: #45a049;
+        }
+
+        #reset-button {
+            background-color: #f44336;
+            color: white;
+        }
+
+        #reset-button:hover {
+            background-color: #e53935;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 2 -->
+    <div class="color-box">
+        May the force be with you!
+    </div>
+
+    <!-- 3 -->
+    <div class="clicker-div">Click to start!</div>
+
+    <!-- 4 -->
+    <div>
+        <div class="container">
+            <input type="number" id="minute-input" min="0" max="59"> min
+            <input type="number" id="seconds-input" min="0" max="59"> sec
+        </div>
+
+        <div id="timer-display">
+            00:00
+        </div>
+
+        <button type="button" id="start-button">Start</button>
+        <button type="button" id="reset-button">Reset</button>
+    </div>
+
+    <script>
+        // 1
+        // let nums = 5;
+        // const index = setInterval(() =>
+        //     alert(`${nums--} seconds remaining`), 1000)
+        // setTimeout(() => {
+        //     clearInterval(index);
+        //     alert('Time is up')
+
+        // }, 5001);
+
+        // 2
+
+        // let width = document.documentElement.clientWidth;
+        // console.log(width);
+
+        // const colorBox = document.querySelector('.color-box');
+        // let marginLeft = 0;
+
+        // const colorBoxIntervalID = setInterval(() => {
+        //     const colorBoxWidth = colorBox.offsetWidth;
+
+        //     marginLeft += 20;
+
+        //     colorBox.style.marginLeft = marginLeft + 'px';
+
+        //     if (marginLeft + colorBoxWidth + 20 >= window.innerWidth) {
+        //         clearInterval(colorBoxIntervalID);
+        //     }
+
+        // }, 100);
+
+        // 3
+
+        // const clickerDiv = document.querySelector('.clicker-div');
+
+        // clickerDiv.addEventListener('click', onClickerStart);
+        // let clicks = 0;
+        // let time = 5;
+        // let timerStarted = false;
+
+        // function onClickerStart(e) {
+        //     e.preventDefault()
+        //     clicks++;
+        //     if (!timerStarted) {
+        //         timerStarted = true
+        //         const timerInterval = setInterval(() => {
+        //             time--;
+        //             clickerDiv.textContent = `Time: ${time} Clicks: ${clicks}`;
+
+        //             if (time <= 0) {
+        //                 clearInterval(timerInterval);
+        //                 alert(`Time is up! Your result: ${clicks} clicks`);
+        //                 clickerDiv.removeEventListener('click', onClickerStart);
+        //             }
+        //         }, 1000);
+        //     }
+        //     clickerDiv.textContent = `Time: ${time} Clicks: ${clicks}`;
+        // }
+
+        // 4
+
+        const minutesInput = document.getElementById('minute-input');
+        const secondsInput = document.getElementById('seconds-input');
+        const timerDisplay = document.getElementById('timer-display');
+        const startBtn = document.getElementById('start-button');
+        const resetBtn = document.getElementById('reset-button');
+
+        let totalTime = 0;
+        let timerId = null;
+
+        startBtn.addEventListener('click', startTimer);
+        resetBtn.addEventListener('click', resetTimer);
+
+        function startTimer() {
+            const minutesVal = Number(minutesInput.value);
+            const secondsVal = Number(secondsInput.value);
+
+            totalTime = minutesVal * 60 + secondsVal;
+            if (totalTime <= 0) {
+                alert('Time is up');
+                return;
+            }
+
+            if (timerId !== null) {
+                clearInterval(timerId);
+            }
+
+            timerId = setInterval(timerDisplayUpdate, 1000);
+        }
+
+        function resetTimer() {
+            clearInterval(timerId);
+            timerId = null;
+            totalTime = 0;
+            timerDisplay.textContent = '00:00';
+        }
+
+        function padNumber(number) {
+            return String(number).padStart(2, '0');
+        }
+
+        function timerDisplayUpdate() {
+            if (totalTime <= 0) {
+                alert('Time is up');
+                timerDisplay.textContent = '00:00';
+                clearInterval(timerId);
+                timerId = null;
+                return;
+            }
+            totalTime--;
+            const minutes = Math.floor(totalTime / 60);
+            const seconds = totalTime % 60;
+
+            timerDisplay.textContent = `${padNumber(minutes)}:${padNumber(seconds)}`;
+        }
+    </script>
+</body>
+
+</html>
